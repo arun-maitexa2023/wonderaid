@@ -71,4 +71,12 @@ urlpatterns =[
    #add more details Resort
 
    path('Moredetails_of_Resort_APIView/<int:id>',views.Moredetails_of_Resort_APIView.as_view(), name='Moredetails_of_Resort_APIView'),
+
+   #add more details Travels
+
+   path('Moredetails_of_Travels_APIView/<int:id>',views.Moredetails_of_Travels_APIView.as_view(), name='Moredetails_of_Travels_APIView'),
+
+   #add more details Guide
+
+   path('Moredetails_of_Guide_APIView/<int:id>',views.Moredetails_of_Guide_APIView.as_view(), name='Moredetails_of_Guide_APIView'),
 ]

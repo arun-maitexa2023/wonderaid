@@ -933,3 +933,75 @@ class Moredetails_of_Resort_APIView(GenericAPIView):
             return Response({'data': serializer.data, 'message': 'Resort data updated successfully', 'success': True}, status=status.HTTP_201_CREATED)
 
         return Response({'message': 'Invalid request', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#Add more details of Travels table
+
+class Moredetails_of_Travels_APIView(GenericAPIView):
+
+    serializer_class = TravelsRegisterSerializer
+
+    def post(self, request, id):
+        travelslocation = request.data.get('travelslocation')
+        travelspincode = request.data.get('travelspincode')
+        travelsrating = request.data.get('travelsrating')
+        travelspackages = request.data.get('travelspackages')
+        travelstiming = request.data.get('travelstiming')
+        policies = request.data.get('policies')
+        reviews = request.data.get('reviews')
+        images = request.data.get('images') 
+
+
+
+        if id:
+            Travelsdata = Travels.objects.get(id=id)
+            Travelsdata.travelslocation = travelslocation
+            Travelsdata.travelspincode = travelspincode
+            Travelsdata.travelsrating = travelsrating
+            Travelsdata.travelspackages = travelspackages
+            Travelsdata.travelstiming = travelstiming
+            Travelsdata.policies = policies
+            Travelsdata.reviews = reviews
+            Travelsdata.images = images
+       
+            
+            
+    
+           
+            
+            Travelsdata.save()
+
+            serializer = self.serializer_class(Travelsdata)
+            return Response({'data': serializer.data, 'message': 'Travel data updated successfully', 'success': True}, status=status.HTTP_201_CREATED)
+
+        return Response({'message': 'Invalid request', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+#Add more details of Guide table
+
+class Moredetails_of_Guide_APIView(GenericAPIView):
+
+    serializer_class = GuideRegisterSerializer
+
+    def post(self, request, id):
+        guidelocation = request.data.get('guidelocation')
+        guidepincode = request.data.get('guidepincode')
+        guiderating = request.data.get('guiderating')
+        Reviews = request.data.get('Reviews')
+        guidedp = request.data.get('guidedp')
+    
+        if id:
+            Guidedata = Guide.objects.get(id=id)
+            Guidedata.guidelocation = guidelocation
+            Guidedata.guidepincode = guidepincode
+            Guidedata.guiderating = guiderating
+            Guidedata.Reviews = Reviews
+            Guidedata.guidedp = guidedp
+              
+                     
+            
+            Guidedata.save()
+
+            serializer = self.serializer_class(Guidedata)
+            return Response({'data': serializer.data, 'message': 'Travel data updated successfully', 'success': True}, status=status.HTTP_201_CREATED)
+
+        return Response({'message': 'Invalid request', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
