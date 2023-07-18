@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
-from .serializers import loginUsersSerializer,UserRegisterSerializer,HotelRegisterSerializer,RestaurentRegisterSerializer,ResortRegisterSerializer,TravelsRegisterSerializer,GuideRegisterSerializer
-from .models import log, user, Hotel, Restaurent, Resort, Travels, Guide
+from .serializers import loginUsersSerializer,UserRegisterSerializer,HotelRegisterSerializer,RestaurentRegisterSerializer,ResortRegisterSerializer,TravelsRegisterSerializer,GuideRegisterSerializer,SpotsSerializer,UserprofileSerializer,PlannedtripSerializer,CommentsSerializer,NotificationSerializer,PackegeHotelSerializer,PackegeResortSerializer,PackegeTravelsSerializer,ChatcommunitySerializer,ReelsSerializer,ResortbookingSerializer,HotelbookingSerializer
+from .models import log, user, Hotel, Restaurent, Resort, Travels, Guide,Spots,Userprofile,Plannedtrip,Comments,Notification,PackegeHotel,PackegeResort,PackegeTravels,Chatcommunity,Reels,Resortbooking,Hotelbooking
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
@@ -528,6 +528,12 @@ class Update_UserAPIView(GenericAPIView):
             return Response({'data':serializer.data,'message':'updated succesfully','success':True},status = status.HTTP_200_OK)
         else:
             return Response({'data':'something went wrong','success': False},status = status.HTTP_400_BAD_REQUEST)
+#Delete User
+class Delete_userAPIView(GenericAPIView):
+    def delete(self, request, log_id):
+        delmember = log.objects.get(pk=log_id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
 
 
 # view all hotels 
@@ -1005,3 +1011,816 @@ class Moredetails_of_Guide_APIView(GenericAPIView):
             return Response({'data': serializer.data, 'message': 'Travel data updated successfully', 'success': True}, status=status.HTTP_201_CREATED)
 
         return Response({'message': 'Invalid request', 'success': False}, status=status.HTTP_400_BAD_REQUEST)
+
+#Hotel search
+class HotelsSearchAPIView(GenericAPIView):
+    def post(self, request):
+        query = request.data.get('query')
+        print(query)
+
+        i = Hotel.objects.filter(hotelname__icontains=query) | Hotel.objects.filter(hotellocation__icontains=query)
+        for dta in i:
+            print(dta)
+
+        data = [{'hotelname': info.hotelname, 'hotelphone': info.hotelphone, 'hotelrating': info.hotelrating, 'hotelcategory': info.hotelcategory,'description': info.description, 'specialoffers': info.specialoffers}
+                for info in i]
+        return Response({'data': data, 'message': 'Successfully fetched', 'success': True}, status=status.HTTP_200_OK)
+
+
+#Restaurent search
+class RestaurentSearchAPIView(GenericAPIView):
+    def post(self, request):
+        query = request.data.get('query')
+        print(query)
+
+        i = Restaurent.objects.filter(restaurentname__icontains=query) | Restaurent.objects.filter(restaurentlocation__icontains=query)
+        for dta in i:
+            print(dta)
+
+        data = [{'restaurentname': info.restaurentname, 'restaurentphone': info.restaurentphone, 'restaurentlocation': info.restaurentlocation, 'restaurentpin': info.restaurentpin,'restaurentrating': info.restaurentrating, 'restaurentcategory': info.restaurentcategory}
+                for info in i]
+        return Response({'data': data, 'message': 'Successfully fetched', 'success': True}, status=status.HTTP_200_OK)
+
+
+#Resort search
+class ResortSearchAPIView(GenericAPIView):
+    def post(self, request):
+        query = request.data.get('query')
+        print(query)
+
+        i = Resort.objects.filter(resortname__icontains=query) | Resort.objects.filter(resortlocation__icontains=query)
+        for dta in i:
+            print(dta)
+
+        data = [{'resortname': info.resortname, 'resortphone': info.resortphone, 'resortlocation': info.resortlocation, 'resortpincode': info.resortpincode,'restaurentrating': info.resortrating, 'resortrating': info.restaurentcategory}
+                for info in i]
+        return Response({'data': data, 'message': 'Successfully fetched', 'success': True}, status=status.HTTP_200_OK)
+
+
+#Travels search
+class TravelsSearchAPIView(GenericAPIView):
+    def post(self, request):
+        query = request.data.get('query')
+        print(query)
+
+
+        i = Travels.objects.filter(travelsname__icontains=query) | Travels.objects.filter(travelslocation__icontains=query)
+        for dta in i:
+            print(dta)
+
+        data = [{'travelsname': info.travelsname, 'travelsphone': info.travelsphone, 'travelslocation': info.travelslocation, 'travelspincode': info.travelspincode,'travelsrating': info.travelsrating, 'reviews': info.reviews}
+                for info in i]
+        return Response({'data': data, 'message': 'Successfully fetched', 'success': True}, status=status.HTTP_200_OK)
+
+
+#Guide search
+class GuideSearchAPIView(GenericAPIView):
+    def post(self, request):
+        query = request.data.get('query')
+        print(query)
+
+
+        i = Guide.objects.filter(guidename__icontains=query) | Guide.objects.filter(guidelocation__icontains=query)
+        for dta in i:
+            print(dta)
+
+        data = [{'guidename': info.guidename, 'guidephone': info.guidephone, 'guidelocation': info.guidelocation, 'guidepincode': info.guidepincode,'guiderating': info.guiderating, 'Reviews': info.Reviews}
+                for info in i]
+        return Response({'data': data, 'message': 'Successfully fetched', 'success': True}, status=status.HTTP_200_OK)
+
+#Add spot by user
+class UseraddSpotsAPIView(GenericAPIView):
+    serializer_class = SpotsSerializer
+
+    def post(self, request):
+        username=""
+        Spotsname = request.data.get('Spotsname')
+        Spotsclimat = request.data.get('Spotsclimat')
+        Bestperiod = request.data.get('Bestperiod')
+        description = request.data.get('description')
+        Visiterscount = request.data.get('Visiterscount')
+        Rating = request.data.get('Rating')
+        Area = request.data.get('Area')
+        Views=request.data.get('View')
+        country = request.data.get('country')
+        users = request.data.get('user')
+        Spots_status="0"
+
+        
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+        
+        
+        serializer = self.serializer_class(data= {'Spotsname':Spotsname, 'Spotsclimat':Spotsclimat,'Bestperiod':Bestperiod,'description':description,'Visiterscount':Visiterscount,'Rating':Rating,'Area':Area,'View':Views,'country':country,'user':users,'username':username,'Spots_status':Spots_status})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Spot added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# view all Spot 
+
+class Get_All_SpotsAPIView(GenericAPIView):
+    serializer_class = SpotsSerializer
+    def get(self,request):
+        queryset = Spots.objects.all()
+        if(queryset.count()>0):
+            serializer = SpotsSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all user data set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+
+#single Spot view
+
+class Get_single_SpotsAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = Spots.objects.get(pk=id)
+        serializer =SpotsSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Spot data','success':True},status =status.HTTP_200_OK)
+
+
+
+
+#Add Userprofile 
+class addUserprofileAPIView(GenericAPIView):
+    serializer_class = UserprofileSerializer
+
+    def post(self, request):
+        username=""
+        Patrons = request.data.get('Patrons')
+        Average = request.data.get('Average')
+        Solo = request.data.get('Solo')
+        Leadingcommunity = request.data.get('Leadingcommunity')
+        Includingcommunity = request.data.get('Includingcommunity')
+        Nextdestination = request.data.get('Nextdestination')
+        users = request.data.get('user')
+        Userprofile_status = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+        
+        
+        serializer = self.serializer_class(data= {'Patrons':Patrons, 'Average':Average,'Solo':Solo,'Leadingcommunity':Leadingcommunity,'Includingcommunity':Includingcommunity,'Nextdestination':Nextdestination,'user':users,'username':username,'Userprofile_status':Userprofile_status})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Spot added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+#Userprofile Single view
+
+class Get_single_UserprofileAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = Userprofile.objects.get(pk=id)
+        serializer =UserprofileSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Userprofile data','success':True},status =status.HTTP_200_OK)
+
+
+#Add Plannedtrip 
+
+
+class PlannedtripAPIView(GenericAPIView):
+    serializer_class = PlannedtripSerializer
+
+    def post(self, request):
+        username=""
+        Startingpoint = request.data.get('Startingpoint')
+        Destination = request.data.get('Destination')
+        Days = request.data.get('Days')
+        Nights = request.data.get('Nights')
+        Plan = request.data.get('Plan')
+        Guide = request.data.get('Guide')
+        Travels = request.data.get('Travels')
+        Persons = request.data.get('Persons')
+        Budget = request.data.get('Budget')
+        users = request.data.get('user')
+        Plannedtrip_status = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+        
+        
+        serializer = self.serializer_class(data= {'Startingpoint':Startingpoint, 'Destination':Destination,'Days':Days,'Nights':Nights,'Plan':Plan,'Guide':Guide,'Travels':Travels,'Persons':Persons,'Budget':Budget,'user':users,'username':username,'Plannedtrip_status':Plannedtrip_status})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Plannedtrip added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# view all Plannedtrip
+
+class Get_All_PlannedtripAPIView(GenericAPIView):
+    serializer_class = PlannedtripSerializer
+    def get(self,request):
+        queryset = Plannedtrip.objects.all()
+        if(queryset.count()>0):
+            serializer = PlannedtripSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all Plannedtrip set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+
+#single Plannedtrip view
+
+class Get_single_PlannedtripAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = Plannedtrip.objects.get(pk=id)
+        serializer =PlannedtripSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Plannedtrip data','success':True},status =status.HTTP_200_OK)
+
+#Update Plannedtrip view
+class Update_PlannedtripAPIView(GenericAPIView):
+    serializer_class=PlannedtripSerializer
+    def put(self,request,id):
+        queryset = Plannedtrip.objects.get(pk=id)
+        print(queryset)
+        serializer = PlannedtripSerializer(instance = queryset,data=request.data,partial= True)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data,'message':'updated succesfully','success':True},status = status.HTTP_200_OK)
+        else:
+            return Response({'data':'something went wrong','success': False},status = status.HTTP_400_BAD_REQUEST)
+
+
+
+#Add Comments 
+
+
+class CommentsAPIView(GenericAPIView):
+    serializer_class = CommentsSerializer
+
+    def post(self, request):
+        username=""
+        spotname=""
+        Commenttext = request.data.get('Commenttext')
+        Createddate = request.data.get('Createddate')
+        spots = request.data.get('spot')
+        users = request.data.get('user')
+        Commentsstatus = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+        data2 = Spots.objects.filter(id=spots).values()
+        for i in data2:
+            spotname=i['Spotsname']
+        
+        
+        serializer = self.serializer_class(data= {'Commenttext':Commenttext, 'Createddate':Createddate,'spot':spots,'user':users,'username':username,'spotname':spotname,'Commentsstatus':Commentsstatus})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Plannedtrip added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+# view all Comments
+
+class Get_All_CommentsAPIView(GenericAPIView):
+    serializer_class = CommentsSerializer
+    def get(self,request):
+        queryset = Comments.objects.all()
+        if(queryset.count()>0):
+            serializer = CommentsSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all Comments set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single Comment view
+
+class Get_single_CommentsAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = Comments.objects.get(pk=id)
+        serializer =CommentsSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Comments data','success':True},status =status.HTTP_200_OK)
+
+
+#Update Comment view
+class Update_CommentsAPIView(GenericAPIView):
+    serializer_class=CommentsSerializer
+    def put(self,request,id):
+        queryset = Comments.objects.get(pk=id)
+        print(queryset)
+        serializer = CommentsSerializer(instance = queryset,data=request.data,partial= True)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data,'message':'updated succesfully','success':True},status = status.HTTP_200_OK)
+        else:
+            return Response({'data':'something went wrong','success': False},status = status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+#Add Notification 
+class NotificationAPIView(GenericAPIView):
+    serializer_class = NotificationSerializer
+
+    def post(self, request):
+        username=""
+        Sender = request.data.get('Sender')
+        Receiver = request.data.get('Receiver')
+        Notification = request.data.get('Notification')
+        Date = request.data.get('Date')
+        Action = request.data.get('Action')
+        users = request.data.get('user')
+        Notificationstatus = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+                 
+        serializer = self.serializer_class(data= {'Sender':Sender, 'Receiver':Receiver,'Notification':Notification,'Date':Date,'Action':Action,'user':users,'Notificationstatus':Notificationstatus,'username':username})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Notification added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# view all Notification
+
+class Get_All_NotificationAPIView(GenericAPIView):
+    serializer_class = NotificationSerializer
+    def get(self,request):
+        queryset = Notification.objects.all()
+        if(queryset.count()>0):
+            serializer = NotificationSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all Notification set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single Notification view
+
+class Get_single_NotificationAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = Notification.objects.get(pk=id)
+        serializer =NotificationSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Notification data','success':True},status =status.HTTP_200_OK)
+
+
+# #Update Notification
+class Update_NotificationAPIView(GenericAPIView):
+    serializer_class=NotificationSerializer
+    def put(self,request,id):
+        queryset = Notification.objects.get(pk=id)
+        print(queryset)
+        serializer = NotificationSerializer(instance = queryset,data=request.data,partial= True)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data,'message':'updated succesfully','success':True},status = status.HTTP_200_OK)
+        else:
+            return Response({'data':'something went wrong','success': False},status = status.HTTP_400_BAD_REQUEST)
+
+
+#Add Hotel Packege 
+class HotelAddPackegeAPIView(GenericAPIView):
+    serializer_class = PackegeHotelSerializer
+
+    def post(self, request):
+        hotelname=""
+        Packegename = request.data.get('Packegename')
+        Destination = request.data.get('Destination')
+        Price = request.data.get('Price')
+        Startdate = request.data.get('Startdate')
+        Enddate = request.data.get('Enddate')
+        Bookingcount = request.data.get('Bookingcount')
+        Packegestatus = '0'
+        hotels =request.data.get('Hotel')
+           
+
+        data = Hotel.objects.filter(id=hotels).values()
+        for i in data:
+            hotelname=i['hotelname']
+
+                 
+        serializer = self.serializer_class(data= {'Packegename':Packegename, 'Destination':Destination,'Price':Price,'Startdate':Startdate,'Enddate':Enddate,'Bookingcount':Bookingcount,'Packegestatus':Packegestatus,'hotel':hotels,'hotelname':hotelname})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Packege added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+# view all PackegeHotel
+
+class Get_All_PackegeHotelAPIView(GenericAPIView):
+    serializer_class = PackegeHotelSerializer
+    def get(self,request):
+        queryset = PackegeHotel.objects.all()
+        if(queryset.count()>0):
+            serializer = PackegeHotelSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all PackegeHotel set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single PackegeHotel view
+
+class Get_single_PackegeHotelAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = PackegeHotel.objects.get(pk=id)
+        serializer =PackegeHotelSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single PackegeHotel data','success':True},status =status.HTTP_200_OK)
+
+#Delete PackegeHotel
+class Delete_PackegeHotelAPIView(GenericAPIView):
+    def delete(self, request, id):
+        delmember = PackegeHotel.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+
+#Add Resort Packege 
+class AddPackegeResortAPIView(GenericAPIView):
+    serializer_class = PackegeResortSerializer
+
+    def post(self, request):
+        resortname=""
+        Packegename = request.data.get('Packegename')
+        Destination = request.data.get('Destination')
+        Price = request.data.get('Price')
+        Startdate = request.data.get('Startdate')
+        Enddate = request.data.get('Enddate')
+        Bookingcount = request.data.get('Bookingcount')
+        Packegestatus = '0'
+        Resorts =request.data.get('Resort')
+           
+
+        data = Resort.objects.filter(id=Resorts).values()
+        for i in data:
+            resortname=i['resortname']
+
+                 
+        serializer = self.serializer_class(data= {'Packegename':Packegename, 'Destination':Destination,'Price':Price,'Startdate':Startdate,'Enddate':Enddate,'Bookingcount':Bookingcount,'Packegestatus':Packegestatus,'Resort':Resorts,'resortname':resortname})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Packege added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+# view all PackegeResort
+
+class Get_All_PackegeResortAPIView(GenericAPIView):
+    serializer_class = PackegeResortSerializer
+    def get(self,request):
+        queryset = PackegeResort.objects.all()
+        if(queryset.count()>0):
+            serializer = PackegeResortSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all PackegeResort set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single PackegeResort view
+
+class Get_single_PackegeResortAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = PackegeResort.objects.get(pk=id)
+        serializer =PackegeResortSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single PackegeResort data','success':True},status =status.HTTP_200_OK)
+
+#Delete PackegeResort
+
+class Delete_PackegeResortAPIView(GenericAPIView):
+    def delete(self, request, id):
+        delmember = PackegeResort.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+#Add Travel Packege 
+class AddPackegeTravelsAPIView(GenericAPIView):
+    serializer_class = PackegeTravelsSerializer
+
+    def post(self, request):
+        travelsname=""
+        Packegename = request.data.get('Packegename')
+        Destination = request.data.get('Destination')
+        Price = request.data.get('Price')
+        Startdate = request.data.get('Startdate')
+        Enddate = request.data.get('Enddate')
+        Bookingcount = request.data.get('Bookingcount')
+        Packegestatus = '0'
+        Travel =request.data.get('Travels')
+      
+           
+
+        data = Travels.objects.filter(id=Travel).values()
+        for i in data:
+            travelsname=i['travelsname']
+
+                 
+        serializer = self.serializer_class(data= {'Packegename':Packegename, 'Destination':Destination,'Price':Price,'Startdate':Startdate,'Enddate':Enddate,'Bookingcount':Bookingcount,'Packegestatus':Packegestatus,'Travels':Travel,'travelsname':travelsname})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Packege added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+#Get all Travel packege
+class Get_All_PackegeTravelsAPIView(GenericAPIView):
+    serializer_class = PackegeTravelsSerializer
+    def get(self,request):
+        queryset = PackegeTravels.objects.all()
+        if(queryset.count()>0):
+            serializer = PackegeTravelsSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all PackegeTravels set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single PackegeTravels view
+
+class Get_single_PackegeTravelsAPIView(GenericAPIView):
+    def get(self,request,id):
+        queryset = PackegeTravels.objects.get(pk=id)
+        serializer =PackegeTravelsSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single PackegeTravels data','success':True},status =status.HTTP_200_OK)
+
+
+#Delete PackegeTravels
+
+class Delete_PackegeTravelsAPIView(GenericAPIView):
+    def delete(self, request, id):
+        delmember = PackegeTravels.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+#Add Chatcommunity
+class ChatcommunityAPIView(GenericAPIView):
+    serializer_class = ChatcommunitySerializer
+
+    def post(self, request):
+        username=""
+        Communityname = request.data.get('Communityname')
+        Chat = request.data.get('Chat')
+        Createdtime = request.data.get('Createdtime')
+        Uploaddate = request.data.get('Uploaddate')
+        users = request.data.get('user')
+        Chatcommunitystatus = '0'
+           
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+                 
+        serializer = self.serializer_class(data= {'Communityname':Communityname, 'Chat':Chat,'Createdtime':Createdtime,'Uploaddate':Uploaddate,'user':users,'Chatcommunitystatus':Chatcommunitystatus,'username':username})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Notification added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#Get all Chat
+class Get_All_ChatcommunityAPIView(GenericAPIView):
+    serializer_class = ChatcommunitySerializer
+    def get(self,request):
+        queryset =  Chatcommunity.objects.all()
+        if(queryset.count()>0):
+            serializer = ChatcommunitySerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all Chatcommunity_chat set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single Chat view
+
+class Get_single_chat(GenericAPIView):
+    def get(self,request,id):
+        queryset = Chatcommunity.objects.get(pk=id)
+        serializer =ChatcommunitySerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Chat data','success':True},status =status.HTTP_200_OK)
+
+#Delete Chat
+
+class Delete_chatAPIView(GenericAPIView):
+    def delete(self, request, id):
+        delmember = Chatcommunity.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+
+
+
+
+#Add Reels
+class AddReelsAPIView(GenericAPIView):
+    serializer_class = ReelsSerializer
+
+    def post(self, request):
+        username=""
+        Reelslength = request.data.get('Reelslength')
+        Reels = request.data.get('Reels')
+        Description = request.data.get('Description')
+        Spotname = request.data.get('Spotname')
+        Uploaddate = request.data.get('Uploaddate')
+        users = request.data.get('user')
+        Reelsstatus = '0'
+           
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+                 
+        serializer = self.serializer_class(data= {'Reelslength':Reelslength, 'Reels':Reels,'Description':Description,'Spotname':Spotname,'Uploaddate':Uploaddate,'user':users,'Reelsstatus':Reelsstatus,'username':username})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'Reels added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#Get all Reels
+class Get_All_ReelsAPIView(GenericAPIView):
+    serializer_class = ReelsSerializer
+    def get(self,request):
+        queryset =  Reels.objects.all()
+        if(queryset.count()>0):
+            serializer = ReelsSerializer(queryset,many= True)
+   
+
+            return Response({'data':serializer.data,'message':'all Reels set','success' : True},status = status.HTTP_200_OK)
+        else:
+    
+            return Response({'data':'non data available','success':False},status = status.HTTP_201_CREATED)
+
+#single reel view
+
+class Get_single_Reel(GenericAPIView):
+    def get(self,request,id):
+        queryset = Reels.objects.get(pk=id)
+        serializer =ReelsSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Reel data','success':True},status =status.HTTP_200_OK)
+
+
+#Delete Reel
+
+class Delete_Reel(GenericAPIView):
+    def delete(self, request, id):
+        delmember = Reels.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+#resort booking
+class ResortbookingApi(GenericAPIView):
+    serializer_class = ResortbookingSerializer
+
+    def post(self, request):
+        username=""
+        resortname=""
+        noofpersons = request.data.get('noofpersons')
+        phone = request.data.get('phone')
+        checkindate = request.data.get('checkindate')
+        checkintime = request.data.get('checkintime')
+        checkoutdate = request.data.get('checkoutdate')
+        resorts = request.data.get('resort')
+        users = request.data.get('user')
+        bookingstatus = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+        data2 = Resort.objects.filter(id=resorts).values()
+        for i in data2:
+            resortname=i['resortname']
+        
+        
+        serializer = self.serializer_class(data= {'noofpersons':noofpersons,'phone':phone,'checkindate':checkindate,'checkintime':checkintime,'checkoutdate':checkoutdate,'resort':resorts,'user':users,'username':username,'resortname':resortname,'bookingstatus':bookingstatus})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'ResortBocking added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Get_All_ResortbookingAPIView(GenericAPIView):
+    serializer_class = ResortbookingSerializer
+
+    def get(self, request):
+        queryset = Resortbooking.objects.all()
+        
+        if queryset.exists():
+            serializer = self.serializer_class(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'All Resort bookings', 'success': True}, status=status.HTTP_200_OK)
+        else:
+            return Response({'data': 'No data available', 'success': False}, status=status.HTTP_200_OK)
+
+
+
+#single Resortbooking view
+
+class Get_single_Resortbooking(GenericAPIView):
+    def get(self,request,id):
+        queryset = Resortbooking.objects.get(pk=id)
+        serializer =ResortbookingSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Resort booking data','success':True},status =status.HTTP_200_OK)
+
+#delete Resort booking
+class Delete_Resortbooking(GenericAPIView):
+    def delete(self, request, id):
+        delmember = Resortbooking.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)
+
+
+#Hotel booking
+class HotelbookingApi(GenericAPIView):
+    serializer_class = HotelbookingSerializer
+
+    def post(self, request):
+        username=""
+        hotelname=""
+        noofpersons = request.data.get('noofpersons')
+        phone = request.data.get('phone')
+        checkindate = request.data.get('checkindate')
+        checkintime = request.data.get('checkintime')
+        checkoutdate = request.data.get('checkoutdate')
+        hotels = request.data.get('hotel')
+        users = request.data.get('user')
+        bookingstatus = '0'
+           
+
+        data = user.objects.filter(id=users).values()
+        for i in data:
+            username=i['name']
+
+        data2 = Hotel.objects.filter(id=hotels).values()
+        for i in data2:
+            hotelname=i['hotelname']
+        
+        
+        serializer = self.serializer_class(data= {'noofpersons':noofpersons,'phone':phone,'checkindate':checkindate,'checkintime':checkintime,'checkoutdate':checkoutdate,'hotel':hotels,'user':users,'username':username,'hotelname':hotelname,'bookingstatus':bookingstatus})
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'data':serializer.data, 'message':'HotelBocking added successfully', 'success':True}, status = status.HTTP_201_CREATED)
+        return Response({'data':serializer.errors, 'message':'Failed','success':False}, status=status.HTTP_400_BAD_REQUEST)
+
+#get all hotel booking
+class Get_All_HotelbookingAPIView(GenericAPIView):
+    serializer_class = HotelbookingSerializer
+
+    def get(self, request):
+        queryset = Hotelbooking.objects.all()
+        
+        if queryset.exists():
+            serializer = self.serializer_class(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'All Hotel bookings', 'success': True}, status=status.HTTP_200_OK)
+        else:
+            return Response({'data': 'No data available', 'success': False}, status=status.HTTP_200_OK)
+
+
+#single Hotelbooking view
+
+class Get_single_Hotelbooking(GenericAPIView):
+    def get(self,request,id):
+        queryset = Hotelbooking.objects.get(pk=id)
+        serializer =HotelbookingSerializer(queryset)
+        return Response({'data':serializer.data,'message':'single Resort booking data','success':True},status =status.HTTP_200_OK)
+
+#delete Hotel booking
+class Delete_Hotelbooking(GenericAPIView):
+    def delete(self, request, id):
+        delmember = Hotelbooking.objects.get(pk=id)
+        delmember.delete()
+        return Response({'message':'Deleted successfully', 'success':True}, status=status.HTTP_200_OK)

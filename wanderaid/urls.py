@@ -36,7 +36,7 @@ urlpatterns =[
     path('Approved_Travels',views.Approved_Travels,name='Approved_Travels'),
     path('Requested_Travels',views.Requested_Travels,name='Requested_Travels'),
     path('admin_approve_Travels/<int:id>',views.admin_approve_Travels,name='admin_approve_Travels'),
-    path('admin_reject_Travels/<int:id>',views.admin_reject_Travels,name='admin_reject_Resorts'),
+    path('admin_reject_Travels/<int:id>',views.admin_reject_Travels,name='admin_reject_Travels'),
 
 #Guides
 

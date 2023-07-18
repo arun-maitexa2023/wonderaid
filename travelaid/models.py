@@ -158,3 +158,249 @@ class Guide(models.Model):
     
     def __str__(self):
         return self.guidename
+    
+class Spots(models.Model):
+    Spotsname=models.CharField(max_length = 50)
+    Spotsclimat =models.CharField(max_length = 50)
+    Bestperiod = models.CharField(max_length = 50)
+    description=models.CharField(max_length = 50,null=True)
+    Visiterscount =models.CharField(max_length = 50,null=True)
+    Rating =models.CharField(max_length = 50,null=True)
+    Area = models.CharField(max_length = 50,null=True)
+    View = models.CharField(max_length = 50,null=True)
+    country =  models.CharField(max_length = 50,null=True)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    Spots_status=models.CharField(max_length = 50)
+  
+    def __str__(self):
+        return self.Spotsname
+    
+class Userprofile(models.Model):
+    Patrons=models.CharField(max_length = 50)
+    Average =models.CharField(max_length = 50)
+    Solo = models.CharField(max_length = 50)
+    Leadingcommunity=models.CharField(max_length = 50,null=True)
+    Includingcommunity =models.CharField(max_length = 50,null=True)
+    Nextdestination =models.CharField(max_length = 50,null=True)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    Userprofile_status=models.CharField(max_length = 50)
+   
+    def __str__(self):
+        return self.username
+
+class Plannedtrip(models.Model):
+    Startingpoint=models.CharField(max_length = 50)
+    Destination =models.CharField(max_length = 50)
+    Days = models.CharField(max_length = 50)
+    Nights=models.CharField(max_length = 50)
+    Plan =models.CharField(max_length = 50,null=True)
+    Guide =models.CharField(max_length = 50,null=True)
+    Travels =models.CharField(max_length = 50,null=True)
+    Persons =models.CharField(max_length = 50,null=True)
+    Budget =models.CharField(max_length = 50,null=True)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    Plannedtrip_status=models.CharField(max_length = 50)
+
+    
+    def __str__(self):
+        return self.Startingpoint
+
+      #return self.Startingpoint
+
+class Comments(models.Model):
+    Commenttext=models.CharField(max_length = 50)
+    Createddate =models.CharField(max_length = 50)
+    spot=models.ForeignKey(Spots, on_delete=models.CASCADE)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    spotname=models.CharField(max_length = 50)
+    Commentsstatus=models.CharField(max_length = 50)
+    
+    def __str__(self):
+        return self.Commenttext
+
+class Notification(models.Model):
+    Sender=models.CharField(max_length = 50)
+    Receiver =models.CharField(max_length = 50)
+    Notification = models.CharField(max_length = 50)
+    Date=models.CharField(max_length = 50)
+    Action =models.CharField(max_length = 50,null=True)
+    username=models.CharField(max_length = 50)
+    Notificationstatus=models.CharField(max_length = 50)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.Sender
+
+class PackegeHotel(models.Model):
+
+    Packegename=models.CharField(max_length = 50)
+    Destination =models.CharField(max_length = 50)
+    Price = models.CharField(max_length = 50)
+    Startdate = models.CharField(max_length = 50)
+    Enddate = models.CharField(max_length = 50)
+    Bookingcount = models.CharField(max_length = 50)
+    Packegestatus=models.CharField(max_length = 50)
+    hotel=models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotelname=models.CharField(max_length = 50)
+                    
+    def __str__(self):
+        return self.Packegename
+
+
+class PackegeResort(models.Model):
+
+    Packegename=models.CharField(max_length = 50)
+    Destination =models.CharField(max_length = 50)
+    Price = models.CharField(max_length = 50)
+    Startdate = models.CharField(max_length = 50)
+    Enddate = models.CharField(max_length = 50)
+    Bookingcount = models.CharField(max_length = 50)
+    Packegestatus=models.CharField(max_length = 50)
+    Resort=models.ForeignKey(Resort, on_delete=models.CASCADE)
+    resortname=models.CharField(max_length = 50)
+                    
+    def __str__(self):
+        return self.Packegename
+
+class PackegeTravels(models.Model):
+
+    Packegename=models.CharField(max_length = 50)
+    Destination =models.CharField(max_length = 50)
+    Price = models.CharField(max_length = 50)
+    Startdate = models.CharField(max_length = 50)
+    Enddate = models.CharField(max_length = 50)
+    Bookingcount = models.CharField(max_length = 50)
+    Packegestatus=models.CharField(max_length = 50)
+    Travels=models.ForeignKey(Travels, on_delete=models.CASCADE)
+    travelsname=models.CharField(max_length = 50)
+                    
+    def __str__(self):
+        return self.Packegename
+
+class Chatcommunity(models.Model):
+    Communityname=models.CharField(max_length = 50)
+    Chat =models.CharField(max_length = 50)
+    Createdtime = models.CharField(max_length = 50)
+    Uploaddate = models.CharField(max_length = 50)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    Chatcommunitystatus=models.CharField(max_length = 50)    
+
+    
+    def __str__(self):
+        return self.Communityname
+
+
+class Reels(models.Model):
+    Reelslength=models.CharField(max_length = 50)
+    Reels = models.FileField(upload_to='images/',null=True)
+    Description = models.CharField(max_length = 50)
+    Spotname = models.CharField(max_length = 50)
+    Uploaddate=models.CharField(max_length = 50)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+        
+
+    
+    def __str__(self):
+        return self.Reelslength
+
+
+
+class Resortbooking(models.Model):
+    resort=models.ForeignKey(Resort, on_delete=models.CASCADE)
+    resortname=models.CharField(max_length = 50)
+    noofpersons =models.CharField(max_length = 50)
+    phone =models.CharField(max_length = 50)
+    checkindate =models.CharField(max_length = 50)
+    checkintime =models.CharField(max_length = 50)
+    checkoutdate = models.CharField(max_length = 50)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    bookingstatus = models.CharField(max_length = 50)
+                  
+    def __str__(self):
+        return self.resortname
+
+class Hotelbooking(models.Model):
+    hotel=models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotelname=models.CharField(max_length = 50)
+    noofpersons =models.CharField(max_length = 50)
+    phone =models.CharField(max_length = 50)
+    checkindate =models.CharField(max_length = 50)
+    checkintime =models.CharField(max_length = 50)
+    checkoutdate = models.CharField(max_length = 50)
+    user=models.ForeignKey(user, on_delete=models.CASCADE)
+    username=models.CharField(max_length = 50)
+    bookingstatus = models.CharField(max_length = 50)
+                  
+    def __str__(self):
+        return self.hotelname
+
+# class Resortbooking(models.Model):
+#     Resortname=models.CharField(max_length = 50)
+#     Checkindate =models.CharField(max_length = 50)
+#     Checkoutdate = models.CharField(max_length = 50)
+#     Createddate = models.CharField(max_length = 50)
+      
+#     login=models.ForeignKey(log, on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.Resortname
+
+# class Restaurentbooking(models.Model):
+#     Restaurentname=models.CharField(max_length = 50)
+#     Bookingdate =models.CharField(max_length = 50)
+#     Createddate = models.CharField(max_length = 50)
+      
+#     login=models.ForeignKey(log, on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.Restaurentname
+
+# class Travelsbooking(models.Model):
+#     Travelsname=models.CharField(max_length = 50)
+#     Tripdate =models.CharField(max_length = 50)
+#     Createddate = models.CharField(max_length = 50)
+#     Amount = models.CharField(max_length = 50)
+      
+#     login=models.ForeignKey(log, on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.Travelsname
+
+# class Payment(models.Model):
+#     Amount=models.CharField(max_length = 50)
+#     Paymentstatus =models.CharField(max_length = 50)
+#     Paymentdate = models.CharField(max_length = 50)
+    
+      
+#     login=models.ForeignKey(log, on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.Amount
+
+
+
+# class Reels(models.Model):
+#     Footagelength=models.CharField(max_length = 50)
+#     Description =models.CharField(max_length = 50)
+#     Spotname = models.CharField(max_length = 50)
+#     Uploaddate = models.CharField(max_length = 50)
+    
+
+    
+      
+#     login=models.ForeignKey(log, on_delete=models.CASCADE)
+
+    
+#     def __str__(self):
+#         return self.Footagelength
+

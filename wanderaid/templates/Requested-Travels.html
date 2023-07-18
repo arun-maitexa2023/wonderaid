@@ -23,8 +23,8 @@
       <!-- partial:../../partials/_navbar.html -->
       <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo" href="index.html"><img src="../static/images/logo.png" alt="logo" /></a>
-          <a class="navbar-brand brand-logo-mini" href="index.html"><img src="../static/images/logo-mini.svg" alt="logo" /></a>
+          <a class="navbar-brand brand-logo" href="{% url 'index' %}"><img src="../static/images/logo.png" alt="logo" /></a>
+          <a class="navbar-brand brand-logo-mini" href="{% url 'index' %}"><img src="../static/images/logo-mini.svg" alt="logo" /></a>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-stretch">
           <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -188,13 +188,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{% url 'index' %}">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="view-users.html">
+              <a class="nav-link" href="{% url 'view_users' %}">
                 <span class="menu-title">View Users</span>
                 <i class="mdi mdi-account-multiple menu-icon"></i>
               </a>
@@ -207,8 +207,8 @@
               </a>
               <div class="collapse" id="Hotels">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="Requested-Hotels.html">Requested</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="Approved-Hotels.html">Approved</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Requested_Hotels' %}">Requested</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Approved_Hotels' %}">Approved</a></li>
                 </ul>
               </div>
             </li>
@@ -220,8 +220,8 @@
               </a>
               <div class="collapse" id="Rest">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="Requested-Restaurents.html">Requested</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="Approved-Restaurents.html">Approved</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Requested_Restaurents' %}">Requested</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Approved_Restaurents' %}">Approved</a></li>
                 </ul>
               </div>
             </li>
@@ -233,8 +233,8 @@
               </a>
               <div class="collapse" id="Resort">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="Requested-Resorts.html">Requested</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="Approved-Resorts.html">Approved</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Requested_Resorts' %}">Requested</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Approved_Resorts' %}">Approved</a></li>
                 </ul>
               </div>
             </li>
@@ -246,8 +246,8 @@
               </a>
               <div class="collapse" id="Travels">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="Requested-Travels.html">Requested</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="Approved-Travels.html">Approved</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Requested_Travels' %}">Requested</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Approved_Travels' %}">Approved</a></li>
                 </ul>
               </div>
             </li>
@@ -259,8 +259,8 @@
               </a>
               <div class="collapse" id="Guides">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="Requested-Guides.html">Requested</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="Approved-Guides.html">Approved</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Requested_Guide' %}">Requested</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{% url 'Approved_Guide' %}">Approved</a></li>
                 </ul>
               </div>
             </li>
